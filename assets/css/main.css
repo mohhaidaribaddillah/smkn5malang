@@ -1837,3 +1837,24 @@ strong{ font-weight:700; }
   :root{ scroll-padding-top: 92px; }
   #articleBody h2, #articleBody h3{ scroll-margin-top: 92px; }
 }
+
+/* === Fix Lighthouse warning: H1UserAgentFontSizeInSection ===
+   Jangan mengandalkan aturan default browser untuk ukuran H1 di sectioning content */
+:where(article, aside, nav, section) h1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+  margin: 0 0 .6rem;
+}
+
+/* Opsional (disarankan) agar konsisten & tidak “ketarik” UA styles */
+:where(article, aside, nav, section) h2 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  line-height: 1.15;
+  margin: 1.2rem 0 .6rem;
+}
+
+:where(article, aside, nav, section) h3 {
+  font-size: clamp(1.2rem, 2.2vw, 1.6rem);
+  line-height: 1.2;
+  margin: 1rem 0 .5rem;
+}
