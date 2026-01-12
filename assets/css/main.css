@@ -1,4 +1,26 @@
 /* ===============================
+   PAGESPEED OPTIMASI (TAMBAHAN) — INDEX CLS + FONT
+   (Boleh tambah, tidak mengubah struktur awal)
+================================ */
+
+/* Kurangi CLS akibat font swap */
+body{
+  font-size-adjust: 0.52;
+  text-rendering: optimizeLegibility;
+}
+
+/* Fix Lighthouse warning: H1UserAgentFontSizeInSection */
+:where(article, aside, nav, section) h1 {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  line-height: 1.1;
+  margin: 0 0 .6rem;
+}
+
+/* Reservasi ruang gambar TANPA width/height attribute */
+.brand-logo{ aspect-ratio: 1 / 1; }
+.photo-frame img{ aspect-ratio: 1 / 1; object-fit: cover; }
+
+/* ===============================
    Design Tokens (Hand-Drawn)
 ================================ */
 :root{
@@ -992,70 +1014,6 @@ strong{ font-weight:700; }
   .section-img{ height: 170px; }
 }
 
-/* ===============================
-   Mobile Drawer - anti glitch (optional safeguard)
-   (Jika sudah ada di main.css, tidak masalah duplikat)
-================================ */
-.nav-drawer{ position: relative; }
-.nav-drawer > summary{ list-style:none; }
-.nav-drawer > summary::-webkit-details-marker{ display:none; }
-
-.drawer-panel{
-  position:absolute;
-  right:0;
-  top: calc(100% + 10px);
-  width: min(92vw, 320px);
-  max-height: min(70vh, 520px);
-  overflow:auto;
-  transform-origin: top right;
-}
-
-.drawer-link{
-  display:block;
-  padding: 10px 10px;
-  border: 2px dashed var(--border);
-  border-radius: var(--wobbly);
-  background:#fff;
-}
-
-.drawer-link.is-active{
-  border-style: solid;
-  box-shadow: 2px 2px 0 0 var(--fg);
-}
-
-.drawer-sub > summary{ list-style:none; }
-.drawer-sub > summary::-webkit-details-marker{ display:none; }
-
-.drawer-submenu{
-  margin-top: 10px;
-  padding: 10px;
-  background: rgba(255,255,255,.9);
-  border: 2px solid var(--border);
-  border-radius: var(--wobbly-md);
-  box-shadow: 3px 3px 0px 0px rgba(45,45,45,.12);
-}
-
-.drawer-sublink{
-  display:block;
-  padding: 10px 10px;
-  margin: 8px 0;
-  border: 2px dashed var(--border);
-  border-radius: var(--wobbly);
-  background:#fff;
-  transition: transform .1s ease, box-shadow .1s ease, background .1s ease;
-}
-
-.drawer-sublink:hover{
-  transform: translate(2px,2px) rotate(-1deg);
-  box-shadow: 2px 2px 0 0 var(--fg);
-  background: var(--muted);
-}
-
-/* cegah hover dropdown desktop "nyangkut" di layar kecil */
-@media (max-width: 860px){
-  .nav-dropdown:hover .nav-dropdown-menu{ display:none; }
-}
-
 /* =========================================================
    INFORMASI PAGE ADDITIONS
    Tempel di paling bawah assets/css/main.css
@@ -1296,7 +1254,6 @@ strong{ font-weight:700; }
 /* =========================================================
    BERITA PAGE
 ========================================================= */
-
 
 .berita-grid{
   display: grid;
