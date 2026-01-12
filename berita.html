@@ -196,8 +196,7 @@
           </h1>
 
           <p class="hero-subtitle">
-            Halaman ini menampilkan 9 posting. Halaman 1 berisi 6 card, halaman 2 berisi 3 card.
-            Klik card untuk membaca artikel lengkap.
+            Info update kegiatan Sekolah SMKN5 Malang.
           </p>
 
           <div class="badges">
@@ -218,8 +217,6 @@
             <img
               src="assets/img/berita2.jfif"
               alt="Kegiatan dan workshop siswa"
-              width="400"
-              height="400"
               loading="eager"
               fetchpriority="high"
               decoding="async"
@@ -362,7 +359,7 @@
         return `
           <article class="berita-card card ${rot}">
             <a class="berita-link" href="artikel.html?id=${encodeURIComponent(p.id)}" aria-label="Buka artikel: ${escapeHtml(p.title)}">
-              <img class="berita-thumb" src="${p.img}" alt="Thumbnail: ${escapeHtml(p.title)}" width="400" height="400" loading="lazy" decoding="async">
+              <img class="berita-thumb" src="${p.img}" alt="Thumbnail: ${escapeHtml(p.title)}" loading="lazy" decoding="async">
               <div class="berita-meta">
                 <span class="chip">${escapeHtml(p.cat)}</span>
                 <span class="berita-date">${formatDate(p.date)}</span>
