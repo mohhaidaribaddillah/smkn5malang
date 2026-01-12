@@ -9,6 +9,7 @@
   <meta name="robots" content="index, follow" />
   <meta name="theme-color" content="#ffffff" />
   <meta name="color-scheme" content="light" />
+  <meta name="format-detection" content="telephone=no" />
 
   <title>SMKN 5 Malang</title>
 
@@ -23,24 +24,44 @@
   <meta property="og:title" content="SMKN 5 Malang" />
   <meta property="og:description" content="Website resmi SMKN 5 Malang — Cerdas, Terampil, Kompetitif." />
   <meta property="og:image" content="assets/img/foto2.jfif" />
-  <meta property="og:image:width" content="355" />
-  <meta property="og:image:height" content="355" />
+  <meta property="og:url" content="https://smkn5malang.vercel.app/" />
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="SMKN 5 Malang" />
   <meta name="twitter:description" content="Website resmi SMKN 5 Malang — Cerdas, Terampil, Kompetitif." />
   <meta name="twitter:image" content="assets/img/foto2.jfif" />
 
+  <link rel="canonical" href="https://smkn5malang.vercel.app/" />
+
   <!-- Preload LCP image (hero) -->
-  <link rel="preload" as="image" href="assets/img/foto2.jfif" fetchpriority="high" />
+  <link rel="preload" as="image" href="assets/img/foto2.jfif" />
+
+  <!-- Critical CSS (Pagespeed: CLS + Deprecated H1 UA size + font fallback) -->
+  <style>
+    :root{color-scheme:light}
+    img{display:block;max-width:100%;height:auto}
+    /* Fix warning: H1UserAgentFontSizeInSection (jangan bergantung ke default UA) */
+    h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.1}
+    .hero-title{font-size:clamp(2rem,5vw,3.25rem);line-height:1.1}
+    /* Kurangi CLS akibat font swap (fallback stabil) */
+    body{
+      font-family:"Patrick Hand","Kalam","Segoe Print","Comic Sans MS",
+        system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    }
+    /* Reservasi ruang gambar TANPA width/height atribut */
+    .brand-logo{aspect-ratio:1/1}
+    .photo-frame img{aspect-ratio:1/1}
+    .gallery-item img{aspect-ratio:1/1}
+    .blog-cover{aspect-ratio:1/1}
+  </style>
 
   <!-- Fonts (Handwritten) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=swap"
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=optional"
         onload="this.onload=null;this.rel='stylesheet'">
   <noscript>
-    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=optional" rel="stylesheet">
   </noscript>
 
   <!-- CSS (non-blocking preload + fallback) -->
@@ -54,10 +75,11 @@
     "@type": "School",
     "name": "SMKN 5 Malang",
     "description": "Website resmi SMKN 5 Malang — Cerdas, Terampil, Kompetitif.",
+    "url": "https://smkn5malang.vercel.app/",
     "telephone": "+62-341-478195",
     "email": "info@smkn5malang.sch.id",
-    "image": "assets/img/foto2.jfif",
-    "logo": "assets/img/logosmk5.jfif",
+    "image": "https://smkn5malang.vercel.app/assets/img/foto2.jfif",
+    "logo": "https://smkn5malang.vercel.app/assets/img/logosmk5.jfif",
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "Jl. Ikan Piranha Atas, Tunjungsekar, Lowokwaru",
@@ -77,7 +99,7 @@
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="#beranda" aria-label="Beranda SMKN 5 Malang">
-        <img class="brand-logo" src="assets/img/logosmk5.jfif" alt="Logo SMKN 5 Malang" width="321" height="321" decoding="async" fetchpriority="low" />
+        <img class="brand-logo" src="assets/img/logosmk5.jfif" alt="Logo SMKN 5 Malang" decoding="async" fetchpriority="low" />
         <div class="brand-text">
           <span class="brand-name">SMKN 5 Malang</span>
           <span class="brand-tag">Cerdas • Terampil • Kompetitif</span>
@@ -197,8 +219,6 @@
               loading="eager"
               fetchpriority="high"
               decoding="async"
-              width="355"
-              height="355"
             />
             <figcaption class="caption">Suasana sekolah & kegiatan belajar</figcaption>
 
@@ -263,17 +283,17 @@
 
         <div class="gallery-grid">
           <figure class="gallery-item rotate-neg">
-            <img src="assets/img/foto1.jfif" alt="Gerbang SMKN 5 Malang" loading="lazy" decoding="async" width="355" height="355">
+            <img src="assets/img/foto1.jfif" alt="Gerbang SMKN 5 Malang" loading="lazy" decoding="async">
             <figcaption>Gerbang sekolah</figcaption>
           </figure>
 
           <figure class="gallery-item rotate-pos">
-            <img src="assets/img/foto2.jfif" alt="Kegiatan belajar/praktik siswa" loading="lazy" decoding="async" width="355" height="355">
+            <img src="assets/img/foto2.jfif" alt="Kegiatan belajar/praktik siswa" loading="lazy" decoding="async">
             <figcaption>Kegiatan belajar & praktik</figcaption>
           </figure>
 
           <figure class="gallery-item rotate-neg">
-            <img src="assets/img/foto3.jfif" alt="Kegiatan sekolah" loading="lazy" decoding="async" width="314" height="314">
+            <img src="assets/img/foto3.jfif" alt="Kegiatan sekolah" loading="lazy" decoding="async">
             <figcaption>Kegiatan & event</figcaption>
           </figure>
         </div>
@@ -418,7 +438,7 @@
 
         <div class="grid grid-3">
           <article class="card rotate-neg">
-            <img class="blog-cover" src="assets/img/berita1.jfif" alt="Workshop / UKK / Kelas Industri" loading="lazy" decoding="async" width="266" height="266">
+            <img class="blog-cover" src="assets/img/berita1.jfif" alt="Workshop / UKK / Kelas Industri" loading="lazy" decoding="async">
             <p class="chip">Kegiatan</p>
             <h3 class="card-title">Workshop / UKK / Kelas Industri</h3>
             <p>Ringkasan singkat kegiatan terbaru di sekolah.</p>
@@ -426,7 +446,7 @@
           </article>
 
           <article class="card rotate-pos">
-            <img class="blog-cover" src="assets/img/berita2.jfif" alt="Karya siswa & lomba" loading="lazy" decoding="async" width="316" height="316">
+            <img class="blog-cover" src="assets/img/berita2.jfif" alt="Karya siswa & lomba" loading="lazy" decoding="async">
             <p class="chip">Prestasi</p>
             <h3 class="card-title">Karya siswa & lomba</h3>
             <p>Highlight karya dan prestasi siswa dari jurusan kreatif maupun teknologi.</p>
@@ -434,7 +454,7 @@
           </article>
 
           <article class="card rotate-neg">
-            <img class="blog-cover" src="assets/img/berita3.jfif" alt="Pengumuman akademik" loading="lazy" decoding="async" width="228" height="228">
+            <img class="blog-cover" src="assets/img/berita3.jfif" alt="Pengumuman akademik" loading="lazy" decoding="async">
             <p class="chip">Info</p>
             <h3 class="card-title">Pengumuman akademik</h3>
             <p>Info jadwal, agenda, dan pembaruan penting.</p>
