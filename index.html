@@ -34,41 +34,99 @@
   <link rel="canonical" href="https://smkn5malang.vercel.app/" />
 
   <!-- Preload LCP image (hero) -->
-  <link rel="preload" as="image" href="assets/img/foto2.jfif" />
+  <link rel="preload" as="image" href="assets/img/foto2.jfif" fetchpriority="high" />
 
-  <!-- Critical CSS (Pagespeed: CLS + Deprecated H1 UA size + font fallback) -->
+  <!-- ===== Critical CSS (stabilkan CLS awal + H1UserAgentFontSizeInSection) ===== -->
   <style>
-    :root{color-scheme:light}
-    img{display:block;max-width:100%;height:auto}
-    /* Fix warning: H1UserAgentFontSizeInSection (jangan bergantung ke default UA) */
-    h1{font-size:clamp(2rem,5vw,3.25rem);line-height:1.1}
-    .hero-title{font-size:clamp(2rem,5vw,3.25rem);line-height:1.1}
-    /* Kurangi CLS akibat font swap (fallback stabil) */
-    body{
-      font-family:"Patrick Hand","Kalam","Segoe Print","Comic Sans MS",
-        system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    :root{
+      --bg:#fdfbf7; --fg:#2d2d2d; --muted:#e5e0d8;
+      --accent:#ff4d4d; --accent2:#2d5da1; --border:#2d2d2d;
+      --container:1100px;
+      --wobbly:255px 15px 225px 15px / 15px 225px 15px 255px;
+      --wobbly-md:25px 10px 30px 12px / 12px 28px 14px 26px;
+      --shadow:4px 4px 0px 0px var(--fg);
+      --shadow-lg:8px 8px 0px 0px var(--fg);
+      --border-w:3px;
+
+      /* scroll anchor biar TOC/anchor nggak ketutup header sticky */
+      scroll-padding-top: 92px;
+      color-scheme: light;
     }
-    /* Reservasi ruang gambar TANPA width/height atribut */
-    .brand-logo{aspect-ratio:1/1}
-    .photo-frame img{aspect-ratio:1/1}
-    .gallery-item img{aspect-ratio:1/1}
-    .blog-cover{aspect-ratio:1/1}
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--fg);
+      background-color:var(--bg);
+      background-image: radial-gradient(var(--muted) 1px, transparent 1px);
+      background-size: 24px 24px;
+
+      /* Fallback stack yang stabil untuk mengurangi CLS saat webfont masuk */
+      font-family: system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+      font-size-adjust: 0.52;
+      text-rendering: optimizeLegibility;
+    }
+
+    img{display:block;max-width:100%;height:auto}
+
+    .container{width:min(var(--container), calc(100% - 32px)); margin-inline:auto}
+
+    /* Fix warning: H1UserAgentFontSizeInSection */
+    :where(article, aside, nav, section) h1{
+      font-size: clamp(2rem, 5vw, 3.25rem);
+      line-height: 1.1;
+      margin: 0 0 .6rem;
+    }
+
+    /* Header minimal agar tidak “loncat” sebelum CSS utama loaded */
+    .site-header{
+      position: sticky; top:0; z-index:50;
+      background: rgba(253,251,247,.92);
+      backdrop-filter: blur(3px);
+      border-bottom: 2px dashed var(--border);
+    }
+    .header-inner{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0}
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-logo{
+      width:44px;height:44px;
+      aspect-ratio: 1 / 1;
+      border:2px solid var(--border);
+      border-radius: var(--wobbly);
+      box-shadow: 2px 2px 0 0 var(--fg);
+      background:#fff; object-fit:contain; padding:6px;
+    }
+
+    /* Reservasi ruang hero image TANPA width/height atribut */
+    .photo-frame img{
+      width:100%;
+      aspect-ratio: 1 / 1; /* foto2.jfif = 355x355 */
+      object-fit: cover;
+    }
+
+    /* Hero typography minimal biar LCP tidak “nunggu” */
+    .hero-title{line-height:1.05}
+    .hero-subtitle{line-height:1.6}
   </style>
 
-  <!-- Fonts (Handwritten) -->
+  <!-- Fonts (non-blocking, minim CLS) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=optional"
-        onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style"
+        href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=optional">
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=optional"
+        media="print" onload="this.media='all'">
   <noscript>
     <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Patrick+Hand&display=optional" rel="stylesheet">
   </noscript>
 
-  <!-- CSS (non-blocking preload + fallback) -->
-  <link rel="preload" href="assets/css/main.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <!-- CSS utama (diprefetch + apply setelah loaded; hero sudah stabil dari critical CSS) -->
+  <link rel="preload" href="assets/css/main.css" as="style">
+  <link rel="stylesheet" href="assets/css/main.css" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="assets/css/main.css" /></noscript>
 
-  <!-- Structured data (SEO + AI Overview support) -->
+  <!-- Structured data -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
