@@ -51,6 +51,47 @@
   <link rel="stylesheet" href="assets/css/main.css" />
   <link rel="stylesheet" href="assets/css/berita.css" />
 
+  <!-- ===== (DITAMBAHKAN) style search hero — tidak mengubah struktur lain ===== -->
+  <style>
+    .sr-only{
+      position:absolute !important;
+      width:1px;height:1px;
+      padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);
+      white-space:nowrap;border:0;
+    }
+    .berita-search{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin: 14px 0 18px;
+      align-items:stretch;
+      max-width: 640px;
+    }
+    .berita-search input[type="search"]{
+      flex: 1 1 260px;
+      min-width: 220px;
+      padding: 12px 14px;
+      font-family: "Patrick Hand", system-ui, sans-serif;
+      font-size: 18px;
+      color: #2d2d2d;
+      background: #ffffff;
+      border: 3px solid #2d2d2d;
+      border-radius: 255px 18px 225px 18px / 18px 225px 18px 255px;
+      box-shadow: 4px 4px 0px 0px #2d2d2d;
+    }
+    .berita-search input[type="search"]::placeholder{ opacity:.75; }
+    .berita-search input[type="search"]:focus{
+      outline:none;
+      border-color:#2d5da1;
+    }
+    .search-meta{
+      margin-top: 6px;
+      font-size: 16px;
+      opacity: .9;
+    }
+  </style>
+
   <!-- Structured Data (AI Overview / Rich Results) -->
   <script type="application/ld+json">
   {
@@ -199,11 +240,14 @@
             Info update kegiatan Sekolah SMKN5 Malang.
           </p>
 
-          <div class="badges">
-            <span class="badge">Kegiatan</span>
-            <span class="badge">Prestasi</span>
-            <span class="badge">Pengumuman</span>
-          </div>
+          <!-- ===== BADGE DIHAPUS, DIGANTI FITUR PENCARIAN (sesuai perintah) ===== -->
+          <form id="searchForm" class="berita-search" role="search" aria-label="Pencarian berita" action="berita.html#list" method="get">
+            <label class="sr-only" for="q">Cari berita</label>
+            <input id="q" name="q" type="search" placeholder="Cari judul, kategori, atau isi..." autocomplete="off" />
+            <button class="btn btn-secondary" type="submit">Cari</button>
+            <button class="btn btn-primary" type="button" id="clearSearch">Reset</button>
+          </form>
+          <p id="searchMeta" class="search-meta" aria-live="polite"></p>
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="#list">Lihat Berita</a>
@@ -319,7 +363,7 @@
     </a>
   </div>
 
-  <!-- ================= SCRIPT (render + pagination) ================= -->
+  <!-- ================= SCRIPT (render + pagination + SEARCH) ================= -->
   <script>
     (function () {
       const POSTS = [
@@ -330,20 +374,10 @@
         { id: "p5", cat: "Info", date: "2026-01-03", title: "Tips Menyusun Portofolio yang Rapi & Meyakinkan", excerpt: "Langkah praktis menyusun portofolio: pilih karya, tulis proses, dan tampilkan hasil.", img: "assets/img/foto2.jfif", author: "Pembina Jurusan" },
         { id: "p6", cat: "Kegiatan", date: "2026-01-02", title: "Pelatihan Soft Skill: Komunikasi, Kolaborasi, dan Etika Kerja", excerpt: "Soft skill jadi pelengkap hard skill—penting untuk magang, kerja, maupun wirausaha.", img: "assets/img/foto3.jfif", author: "BK & Kesiswaan" },
 
-        // page 2 (3 post)
         { id: "p7", cat: "Prestasi", date: "2025-12-28", title: "Highlight Prestasi Semester Ini: Dari Lomba sampai Proyek Kelas", excerpt: "Rangkuman capaian siswa dalam lomba, pameran, dan proyek berbasis tim.", img: "assets/img/informasi1.jfif", author: "Redaksi Sekolah" },
         { id: "p8", cat: "Info", date: "2025-12-26", title: "Panduan Layanan: Cara Mengakses Informasi Akademik dengan Cepat", excerpt: "Panduan singkat akses layanan sekolah: informasi, dokumen, dan kanal komunikasi.", img: "assets/img/informasi2.jfif", author: "Admin" },
         { id: "p9", cat: "Pengumuman", date: "2025-12-20", title: "Informasi Dokumen Umum: Kalender, Tata Tertib, dan SOP", excerpt: "Daftar dokumen yang sering dibutuhkan siswa/orang tua untuk urusan administrasi.", img: "assets/img/informasi3.jfif", author: "Tata Usaha" }
       ];
-
-      const qs = new URLSearchParams(location.search);
-      let page = parseInt(qs.get("page") || "1", 10);
-      if (isNaN(page) || page < 1) page = 1;
-      if (page > 2) page = 2;
-
-      const PAGE_SIZE = (page === 1) ? 6 : 3;
-      const start = (page === 1) ? 0 : 6;
-      const items = POSTS.slice(start, start + PAGE_SIZE);
 
       const grid = document.getElementById("beritaGrid");
       const pageHint = document.getElementById("pageHint");
@@ -351,8 +385,37 @@
       const prevBtn = document.getElementById("prevBtn");
       const nextBtn = document.getElementById("nextBtn");
 
-      pageHint.textContent = "Halaman " + page + " dari 2";
-      pageLabel.textContent = page + " / 2";
+      const searchForm = document.getElementById("searchForm");
+      const qInput = document.getElementById("q");
+      const clearBtn = document.getElementById("clearSearch");
+      const searchMeta = document.getElementById("searchMeta");
+
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, (m) => ({
+          "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+        }[m]));
+      }
+
+      function formatDate(iso) {
+        try {
+          const d = new Date(iso + "T00:00:00");
+          return d.toLocaleDateString("id-ID", { day:"2-digit", month:"short", year:"numeric" });
+        } catch {
+          return iso;
+        }
+      }
+
+      function normalize(s){
+        return String(s || "").toLowerCase().trim();
+      }
+
+      function matchesQuery(post, q){
+        if (!q) return true;
+        const hay = [
+          post.title, post.excerpt, post.cat, post.author, post.date
+        ].map(normalize).join(" ");
+        return hay.includes(q);
+      }
 
       function cardHTML(p, i) {
         const rot = (i % 2 === 0) ? "rotate-neg" : "rotate-pos";
@@ -372,44 +435,98 @@
         `;
       }
 
-      function escapeHtml(str) {
-        return String(str).replace(/[&<>"']/g, (m) => ({
-          "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-        }[m]));
+      function buildHref(page, q){
+        const sp = new URLSearchParams();
+        if (q) sp.set("q", q);
+        sp.set("page", String(page));
+        return "berita.html?" + sp.toString() + "#list";
       }
 
-      function formatDate(iso) {
-        try {
-          const d = new Date(iso + "T00:00:00");
-          return d.toLocaleDateString("id-ID", { day:"2-digit", month:"short", year:"numeric" });
-        } catch {
-          return iso;
+      function render() {
+        const sp = new URLSearchParams(location.search);
+        const q = normalize(sp.get("q") || "");
+        let page = parseInt(sp.get("page") || "1", 10);
+        if (isNaN(page) || page < 1) page = 1;
+
+        // sync input
+        qInput.value = sp.get("q") || "";
+
+        // filter
+        const filtered = POSTS.filter(p => matchesQuery(p, q));
+        const PAGE_SIZE = 6;
+        const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        if (page > totalPages) page = totalPages;
+
+        const start = (page - 1) * PAGE_SIZE;
+        const items = filtered.slice(start, start + PAGE_SIZE);
+
+        // meta text
+        if (q) {
+          searchMeta.textContent = `Menampilkan ${filtered.length} hasil untuk kata kunci: "${sp.get("q")}"`;
+        } else {
+          searchMeta.textContent = `Menampilkan ${filtered.length} posting terbaru.`;
+        }
+
+        // render cards / empty state
+        if (!items.length) {
+          grid.innerHTML = `
+            <div class="card rotate-neg">
+              <h3 class="card-title">Tidak ada hasil</h3>
+              <p>Coba kata kunci lain, atau klik <strong>Reset</strong> untuk menampilkan semua berita.</p>
+            </div>
+          `;
+        } else {
+          grid.innerHTML = items.map(cardHTML).join("");
+        }
+
+        // pagination labels
+        pageHint.textContent = "Halaman " + page + " dari " + totalPages;
+        pageLabel.textContent = page + " / " + totalPages;
+
+        // prev/next
+        if (page <= 1) {
+          prevBtn.href = buildHref(1, q);
+          prevBtn.setAttribute("aria-disabled", "true");
+          prevBtn.classList.add("is-disabled");
+        } else {
+          prevBtn.href = buildHref(page - 1, q);
+          prevBtn.removeAttribute("aria-disabled");
+          prevBtn.classList.remove("is-disabled");
+        }
+
+        if (page >= totalPages) {
+          nextBtn.href = buildHref(totalPages, q);
+          nextBtn.setAttribute("aria-disabled", "true");
+          nextBtn.classList.add("is-disabled");
+        } else {
+          nextBtn.href = buildHref(page + 1, q);
+          nextBtn.removeAttribute("aria-disabled");
+          nextBtn.classList.remove("is-disabled");
         }
       }
 
-      grid.innerHTML = items.map(cardHTML).join("");
+      // submit search (jalan & berfungsi tanpa reload, URL ikut berubah)
+      searchForm.addEventListener("submit", function(e){
+        e.preventDefault();
+        const q = qInput.value.trim();
+        const sp = new URLSearchParams(location.search);
+        if (q) sp.set("q", q); else sp.delete("q");
+        sp.set("page", "1");
+        const nextUrl = "berita.html?" + sp.toString() + "#list";
+        history.replaceState({}, "", nextUrl);
+        render();
+        location.hash = "#list";
+      });
 
-      // Pagination links
-      const p1 = "berita.html?page=1";
-      const p2 = "berita.html?page=2";
+      // reset search
+      clearBtn.addEventListener("click", function(){
+        qInput.value = "";
+        history.replaceState({}, "", "berita.html#list");
+        render();
+        location.hash = "#list";
+      });
 
-      if (page === 1) {
-        prevBtn.href = p1;
-        prevBtn.setAttribute("aria-disabled", "true");
-        prevBtn.classList.add("is-disabled");
-
-        nextBtn.href = p2;
-        nextBtn.removeAttribute("aria-disabled");
-        nextBtn.classList.remove("is-disabled");
-      } else {
-        prevBtn.href = p1;
-        prevBtn.removeAttribute("aria-disabled");
-        prevBtn.classList.remove("is-disabled");
-
-        nextBtn.href = p2;
-        nextBtn.setAttribute("aria-disabled", "true");
-        nextBtn.classList.add("is-disabled");
-      }
+      render();
     })();
   </script>
 
