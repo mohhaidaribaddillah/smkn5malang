@@ -1815,3 +1815,10 @@ strong{ font-weight:700; }
   line-height: 1.2;
   margin: 1rem 0 .5rem;
 }
+
+/* Reservasi ruang hero image TANPA width/height atribut */
+    .photo-frame img{
+      width:100%;
+      aspect-ratio: 1 / 1; /* foto2.jfif = 355x355 */
+      object-fit: cover;
+    }
